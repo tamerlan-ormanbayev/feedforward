@@ -1,7 +1,48 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Welcome {%endblock%}
+{% block title %}Welcome{% endblock %}
 
 {% block content %}
-<h1>The front page</h1>
+    
+
+    <div class="mt-6 mb-6 px-6 py-12 rounded-xl flex flex-wrap-reverse" style="background:#eee1cf;"> 
+        <h2 class="mb-12 text-2xl text-center order-3 w-2/3">Newest Listings</h2>
+        <h2 class="mb-12 text-2xl text-center order-4 w-1/3">Categories</h2>
+        <div class="grid gap-y-20 gap-x-0 grid-cols-3 h-auto w-2/3 order-1">
+            {% for item in items %}
+                <div class="w-4/5 h-90 ">
+                    <button class='w-auto h-90 transition ease-out hover:-translate-y-1 hover:scale-110 '>
+                        <div>
+                            <img src="{{item.image.url}}" class='rounded-t-xl object-cover h-80 w-96'> 
+                        </div>
+
+                        <div class='p-6 rounded-b-xl' style="background:#fcf5eb;">
+                            <h2 class='text-2xl'> {{item.name}}</h2>
+                            <p class='text-gray-400'> Price: {{item.price}}</p>
+                        </div>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>    
+
+        <div class="w-1/3 order-2" style="background:#eee1cf;"> 
+           
+    
+            <div class="grid grid-cols-1 gap-20 h-auto justify-self-end justify-items-end">
+                {% for category in categories %}
+                <div class="w-full h-auto">
+                    <button class='w-full h-20 transition ease-out hover:-translate-y-1 hover:scale-110'>
+    
+                        <div class='p-6 rounded-xl' style="background:#fcf5eb;">
+                            <h2 class='text-2xl'> {{category.name}}</h2>
+                            <p class='text-gray-400'>{{category.items.count}} items</p>
+                        </div>
+                    </button>
+                </div>
+    
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
