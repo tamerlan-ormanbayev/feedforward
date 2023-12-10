@@ -17,12 +17,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls import include
 
 from core.views import index, contact, about
 urlpatterns = [
     path('', include('core.urls')),
+    path('items/', include('item.urls')),
+    path('dashboard/', include('dashboard.urls')),
     path('admin/', admin.site.urls),
     path('about/', about, name='about'),
 ]   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
