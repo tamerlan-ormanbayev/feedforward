@@ -3,6 +3,9 @@ from item.models import Category, Item
 from django.contrib.auth import logout
 from .forms import SignupForm
 from django.contrib.auth.decorators import login_required
+from item.models import Review
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 def index(request):
     items = Item.objects.filter(is_sold=False)[0:6]
     categories = Category.objects.all()
@@ -17,13 +20,15 @@ def contact(request):
 def about(request):
     return render(request, 'core/about.html')
 
+@user_passes_test(lambda u: u.is_anonymous)
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
 
         if form.is_valid():
-            form.save()
-
+            user = form.save()
+            review = Review.objects.create(user = user)
+            review.save()
             return redirect('/login/')
     else:
         form = SignupForm()
@@ -31,7 +36,7 @@ def signup(request):
     return render(request, 'core/signup.html', {
         'form':form
     })
-    
+
 @login_required
 def logout_view(request):
     logout(request)

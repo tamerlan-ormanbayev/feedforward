@@ -3,12 +3,25 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-    
+
+    <h2 class="text-4xl mb-6 text-center font-semibold">Discover affordable food near you!</h2>
+    <form method="get" action="{% url 'item:browse' %}" class="flex justify-center">
+
+        <input name="query" class="w-1/3 justify-end py-4 px-6 border rounded-xl" type="text" value="{{query}}" placeholder="Find bananas, bananas or bananas...">
+
+        <button class="ml-6 py-4 px-8 text-lb bg-green-500 hover:bg-green-700 text-white rounded-xl">Search</button>
+
+    </form>
+    {% if not request.user.is_authenticated %}
+    <a href="{% url 'core:signup' %}">
+        <h2 class=" my-6 text-center hover:underline font-semibold">Want to donate? Create an account.</h2>
+    </a>
+    {% endif %}
 
     <div class="mt-6 mb-6 px-6 py-12 rounded-xl flex flex-wrap-reverse" style="background:#eee1cf;"> 
-        <h2 class="mb-12 text-2xl text-center order-3 w-2/3">Newest Listings</h2>
-        <h2 class="mb-12 text-2xl text-center order-4 w-1/3">Categories</h2>
-        <div class="grid gap-y-20 gap-x-0 grid-cols-3 h-auto w-2/3 order-1">
+        <h2 class="mb-12 text-3xl font-semibold text-center order-3 w-full">Newest Listings</h2>
+    
+        <div class="grid gap-y-20 gap-x-0 grid-cols-4 h-auto w-full ">
             {% for item in items %}
                 <div class="w-4/5 h-90 ">
                     <a href="{% url 'item:detail' item.id %}">
@@ -27,25 +40,6 @@
                 </div>
             {% endfor %}
         </div>    
-
-        <div class="w-1/3 order-2" style="background:#eee1cf;"> 
-           
-    
-            <div class="grid grid-cols-1 gap-20 h-auto justify-self-end justify-items-end">
-                {% for category in categories %}
-                <div class="w-full h-auto">
-                    <button class='w-full h-20 transition ease-out hover:-translate-y-1 hover:scale-110'>
-    
-                        <div class='p-6 rounded-xl' style="background:#fcf5eb;">
-                            <h2 class='text-2xl'> {{category.name}}</h2>
-                            <p class='text-gray-400'>{{category.items.count}} items</p>
-                        </div>
-                    </button>
-                </div>
-    
-                {% endfor %}
-            </div>
-        </div>
     </div>
 
 {% endblock %}

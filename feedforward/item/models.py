@@ -21,6 +21,19 @@ class Item(models.Model):
     is_sold = models.BooleanField(default =False)
     created_by = models.ForeignKey(User, related_name="items", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    weight = models.FloatField()
+    city = models.CharField(max_length=50)
         
     def __str__(self):
         return self.name
+
+class Review(models.Model):
+    user = models.ForeignKey(User, related_name='users', on_delete=models.CASCADE)
+
+
+
+class ReviewMessage(models.Model):
+    review = models.ForeignKey(Review, related_name='rev_messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name='created_reviews', on_delete=models.CASCADE)

@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
-from .forms import NewItemForm, EditItemForm
-from .models import Item, Category
+from .forms import NewItemForm, EditItemForm, ReviewMessageForm
+from .models import Item, Category, Review, ReviewMessage
+from chat.models import Chat
+from chat.forms import ChatMessage, ChatMessageForm 
 
 def browse(request):
     query=request.GET.get('query','')
@@ -27,22 +29,47 @@ def browse(request):
 
 
 
-def detail(request, pk):
+def detail(request, pk,):
     item = get_object_or_404(Item, pk=pk)
     related_items = Item.objects.filter(category=item.category, is_sold=False).exclude(pk=pk)[0:3]
+    review = Review.objects.filter(user=item.created_by).first()
 
+    if request.method == "POST":
+        form = ReviewMessageForm(request.POST)
+
+        if form.is_valid():
+            review_message = form.save(commit=False)
+
+            # Check if a valid Review instance exists
+            if review:
+                review_message.review = review
+                review_message.created_by = request.user
+                review_message.save()
+
+                # Optionally, update the review instance (if needed)
+                review.save()
+
+                return redirect('item:detail', pk=pk)
+            else:
+                return redirect('item:detail', pk=pk)
+    else:
+        form = ReviewMessageForm()
 
     return render(request, 'item/detail.html', {
+        'review': review,
+        'form': form,
         'item': item,
         'related_items': related_items,
     })
 
 @login_required
 def new(request):
+
     if request.method == 'POST':
         form = NewItemForm(request.POST, request.FILES)
 
         if form.is_valid():
+            
             item = form.save(commit=False)
             item.created_by = request.user
             item.save()
@@ -80,3 +107,4 @@ def edit(request, pk):
         'form': form,
         'title': 'Edit Item',
     })
+

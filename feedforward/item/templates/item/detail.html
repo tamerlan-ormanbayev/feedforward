@@ -3,15 +3,17 @@
 {% block title %}{{ item.name }}{% endblock %}
 
 {% block content %}
-    <div class="grid grid-cols-5 gap-6">
-        <div class="col-span-3">
-            <img src="{{ item.image.url }}" class="object-cover h-90 w-96 rounded-xl">
-        </div>
+    <div class="flex gap-6">
 
-        <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
+            <img src="{{ item.image.url }}" class="object-cover h-90 w-96 rounded-xl">
+    
+
+        <div class="p-6 w-full rounded-xl" style="background:#eee1cf;">
             <h1 class="mb-6 text-3xl">{{ item.name }}</h1>
             <p class="text-gray-500"><strong>Price: </strong> {{ item.price }}</p>
             <p class="text-gray-500"><strong>Donator: </strong> {{ item.created_by.username }}</p>
+            <p class="text-gray-500"><strong>Weight: </strong> {{ item.weight }}</p>
+            <p class="text-gray-500"><strong>City: </strong> {{ item.city }}</p>
 
             {% if item.description %}
                 <p class="text-gray-700">
@@ -23,19 +25,19 @@
             {% endif %}
 
             {% if request.user == item.created_by %}
-                <div class="mt-6 p-6 bg-white rounded-xl">
+                <div class="mt-6 p-6 rounded-xl" style="background:#fcf5eb;">
                     <p>This is your listing!</p>
-                    <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Edit Listing</a>
+                    <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-green-500 text-white rounded-xl hover:bg-green-700">Edit Listing</a>
                     <a href="{% url 'item:delete' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Delete Listing</a>
                 </div>
             {% else %}
-                <a href="{% url "chat:new" item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact donator</a>
+                <a href="{% url "chat:new" item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-green-500 text-white rounded-xl hover:bg-green-700">Contact donator</a>
             {% endif %}
         </div>
     </div>
 
     <div class="mt-6 mb-6 px-6 py-12 rounded-xl flex flex-wrap-reverse" style="background:#eee1cf;"> 
-        <h2 class="mb-12 text-2xl text-center order-3 w-2/3">Related listings</h2>
+        <h2 class="mb-12 text-3xl font-semibold text-center order-3 w-full">Related listings</h2>
         <div class="grid gap-y-20 gap-x-0 grid-cols-3 h-auto w-2/3 order-1">
             {% for item in related_items %}
                 <div class="w-4/5 h-90 ">
@@ -55,5 +57,25 @@
                 </div>
             {% endfor %}
         </div> 
-    </div>   
+    </div>
+    
+    <h1 class="mb-6 text-3xl">Donator Reviews</h1>
+
+    <div class="space-y-6">
+        {% for message in review.rev_messages.all %}
+            <div class="p-6 flex bg-green-300 rounded-xl" style="{% if message.created_by != request.user %}background:#eee1cf;{% endif %}"> 
+                <div>
+                    <p class="mb-4"><strong>{{message.created_by.username}}</strong> | {{message.created_at}}</p>
+                    <p>{{ message.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" action="." class="mt-6">
+        {% csrf_token %}
+
+        {{form.as_p}}
+        <button class="mt-6 py-4 px-8 text-lg bg-green-500 hover:bg-green-700 rounded-xl text-white">Send</button>
+    </form>
 {% endblock %}
