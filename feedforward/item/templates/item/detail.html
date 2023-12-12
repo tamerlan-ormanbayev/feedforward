@@ -5,7 +5,7 @@
 {% block content %}
     <div class="grid grid-cols-5 gap-6">
         <div class="col-span-3">
-            <img src="{{ item.image.url }}" class="rounded-xl">
+            <img src="{{ item.image.url }}" class="object-cover h-90 w-96 rounded-xl">
         </div>
 
         <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
@@ -22,7 +22,15 @@
                 </p>
             {% endif %}
 
-            <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact donator</a>
+            {% if request.user == item.created_by %}
+                <div class="mt-6 p-6 bg-white rounded-xl">
+                    <p>This is your listing!</p>
+                    <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Edit Listing</a>
+                    <a href="{% url 'item:delete' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Delete Listing</a>
+                </div>
+            {% else %}
+                <a href="{% url "chat:new" item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact donator</a>
+            {% endif %}
         </div>
     </div>
 
@@ -33,7 +41,7 @@
                 <div class="w-4/5 h-90 ">
                     <a href="{% url 'item:detail' item.id %}">
                         <button class='w-auto h-90 transition ease-out hover:-translate-y-1 hover:scale-110 '>
-                    </a>
+                 
                         <div>
                             <img src="{{item.image.url}}" class='rounded-t-xl object-cover h-80 w-96'> 
                         </div>
@@ -43,7 +51,9 @@
                             <p class='text-gray-400'> Price: {{item.price}}</p>
                         </div>
                     </button>
+                    </a>
                 </div>
             {% endfor %}
-        </div>    
+        </div> 
+    </div>   
 {% endblock %}

@@ -13,7 +13,7 @@
                 <div class="w-4/5 h-90 ">
                     <a href="{% url 'item:detail' item.id %}">
                         <button class='w-auto h-90 transition ease-out hover:-translate-y-1 hover:scale-110 '>
-                    </a>
+                    
                         <div>
                             <img src="{{item.image.url}}" class='rounded-t-xl object-cover h-80 w-96'> 
                         </div>
@@ -23,6 +23,7 @@
                             <p class='text-gray-400'> Price: {{item.price}}</p>
                         </div>
                     </button>
+                    </a>
                 </div>
             {% endfor %}
         </div>    

@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Browse{% endblock %}
+
+{% block content %}
+    <div class="p-6 grid grid-cols-4 gap-4 rounded-xl" style="background:#eee1cf;">
+        <div class="col-span-1">
+            <form method="get" action="{% url 'item:browse' %}">
+                <input name="query" class="w-full py-4 px-6 border rounded-xl" type="text" value="{{query}}" placeholder="Find bananas, bananas or bananas...">
+                <button class="mt-2 py-4 px-8 text-lb bg-green-500 text-white rounded-xl">Search</button>
+            </form>
+
+            <hr class="my-6">
+            <p class="font-semibold">Categories</p>
+            <div class="grid grid-cols-1 gap-4 h-auto justify-self-end justify-items-end my-3">
+                {% for category in categories %}
+                <div class="w-full h-full" >
+                    <a href="{% url 'item:browse' %}?query={{query}}&category={{category.id}}">
+                    <button class='w-full h-auto transition ease-out hover:-translate-y-1 hover:scale-110'>
+    
+                        <div class="p-3 rounded-xl flex gap-5 " style="background:#fcf5eb; {% if category.id == category_id %} background:#cfc9c0; {% endif %}">
+                            <p class='text-xl'> {{category.name}}</p>
+                            <p class='text-gray-400'>{{category.items.count}} items</p>
+                        </div>
+                    </button>
+                    </a>
+                </div>
+    
+                {% endfor %}
+            </div>
+
+            <hr class="my-6">
+            <p class="font-semibold">Clear filters</p>
+ 
+            <a href="{% url 'item:browse' %}">
+                <button class="mt-2 py-4 px-8 text-lb bg-red-500 text-white rounded-xl hover:bg-red-700">Clear</button>
+            </a>
+         
+
+        </div>
+
+        <div class="col-span-3  p-6">
+            <div class="grid gap-y-20 gap-x-0 grid-cols-3 h-auto w-full ">
+                {% for item in items %}
+                    <div class="w-4/5 h-90 ">
+                        <a href="{% url 'item:detail' item.id %}">
+                            <button class='w-auto h-90 transition ease-out hover:-translate-y-1 hover:scale-110 '>
+                       
+                            <div>
+                                <img src="{{item.image.url}}" class='rounded-t-xl object-cover h-80 w-96'> 
+                            </div>
+    
+                            <div class='p-6 rounded-b-xl' style="background:#fcf5eb;">
+                                <h2 class='text-2xl'> {{item.name}}</h2>
+                                <p class='text-gray-400'> Price: {{item.price}}</p>
+                            </div>
+                        </button>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>  
+        </div>
+    </div>
+{% endblock %}
